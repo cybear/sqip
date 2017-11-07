@@ -44,7 +44,14 @@ const argvOptions = [{
         type: 'path',
         description: 'Save the resulting SVG to a file',
         example: "'sqip --output=/foo/bar/image.svg' or 'sqip -o /foo/bar/image.svg'"
-    }
+    },
+    {
+        name: 'mode',
+        short: 'm',
+        type: 'int',
+        description: 'mode: 0=combo, 1=triangle, 2=rect, 3=ellipse, 4=circle, 5=rotatedrect, 6=beziers, 7=rotatedellipse, 8=polygon',
+        example: "'sqip --mode=1' or 'sqip -m 1'"
+    },
 ];
 const getArguments = () => argv.option(argvOptions).run();
 
@@ -94,8 +101,8 @@ const getDimensions = (filename) => sizeOf(filename);
 const findLargerImageDimension = ({ width, height }) => width > height ? width : height;
 
 // Run Primitive with reasonable defaults (rectangles as shapes, 9 shaper per default) to generate the placeholder SVG
-const runPrimitive = (filename, { numberOfPrimitives = 8 }, primitive_output, dimensions) => {
-    child_process.execSync(`primitive -i ${filename} -o ${primitive_output} -n ${numberOfPrimitives} -m 0 -s ${findLargerImageDimension(dimensions)}`);
+const runPrimitive = (filename, { numberOfPrimitives = 8, mode = 1 }, primitive_output, dimensions) => {
+    child_process.execSync(`primitive -i ${filename} -o ${primitive_output} -n ${numberOfPrimitives} -m ${mode} -s ${findLargerImageDimension(dimensions)}`);
 }
 
 // Read the Primitive-generated SVG so that we can continue working on it
